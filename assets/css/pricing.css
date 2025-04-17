@@ -56,7 +56,6 @@
 }
 
 .pricing-card:hover {
-  transform: translateY(-10px);
   box-shadow: var(--shadow);
 }
 

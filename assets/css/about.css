@@ -17,13 +17,6 @@
   color: var(--dark-color);
 }
 
-.about-image {
-  flex: 1;
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
 .about-vmv {
   padding: 60px 0;
   background-color: var(--light-color);

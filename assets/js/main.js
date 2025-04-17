@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Mobile menu toggle
   const hamburger = document.querySelector(".hamburger");
   const navLinks = document.querySelector(".nav-links");
+  const contactButtons = document.querySelectorAll(
+    '.btn-primary[href="contact.html"], #contactButton'
+  );
+  const contactOverlay = document.getElementById("contactOverlay");
+  const closeBtn = document.querySelector(".close-btn");
 
   if (hamburger) {
     hamburger.addEventListener("click", function () {
@@ -10,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Close mobile menu when clicking a link
   const navLinksItems = document.querySelectorAll(".nav-links li a");
   navLinksItems.forEach((item) => {
     item.addEventListener("click", function () {
@@ -21,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // FAQ Toggles
   const faqQuestions = document.querySelectorAll(".faq-question");
   if (faqQuestions.length > 0) {
     faqQuestions.forEach((question) => {
@@ -29,12 +31,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const faqItem = this.parentNode;
         const isActive = faqItem.classList.contains("active");
 
-        // Close all FAQ items
         document.querySelectorAll(".faq-item").forEach((item) => {
           item.classList.remove("active");
         });
 
-        // If the clicked item wasn't active, open it
         if (!isActive) {
           faqItem.classList.add("active");
         }
@@ -42,14 +42,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // FAQ Category Tabs
   const categoryButtons = document.querySelectorAll(".category-btn");
   if (categoryButtons.length > 0) {
     categoryButtons.forEach((button) => {
       button.addEventListener("click", function () {
         const category = this.dataset.category;
 
-        // Remove active class from all buttons and containers
         document.querySelectorAll(".category-btn").forEach((btn) => {
           btn.classList.remove("active");
         });
@@ -58,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
           container.classList.remove("active");
         });
 
-        // Add active class to selected button and container
         this.classList.add("active");
         document
           .querySelector(`.faq-container.${category}`)
@@ -67,62 +64,133 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Testimonial Slider
-  let currentSlide = 0;
+  const slidesContainer = document.querySelector(".testimonials-container");
   const slides = document.querySelectorAll(".testimonial-slide");
   const dots = document.querySelector(".slider-dots");
   const prev = document.querySelector(".slider-prev");
   const next = document.querySelector(".slider-next");
 
+  let currentSlide = 0;
+  let slideInterval;
+
   if (slides.length > 0) {
-    // Create dots
+    while (dots.firstChild) {
+      dots.removeChild(dots.firstChild);
+    }
+
     slides.forEach((_, index) => {
       const dot = document.createElement("span");
       dot.classList.add("dot");
       if (index === 0) dot.classList.add("active");
       dot.addEventListener("click", () => {
         goToSlide(index);
+        resetInterval();
       });
       dots.appendChild(dot);
     });
 
-    // Initialize slider
-    function showSlide(n) {
-      slides.forEach((slide) => {
-        slide.style.display = "none";
+    function initSlider() {
+      slides.forEach((slide, index) => {
+        if (index === currentSlide) {
+          slide.classList.add("active");
+        } else {
+          slide.classList.remove("active", "prev");
+          if (index < currentSlide) {
+            slide.classList.add("prev");
+          }
+        }
       });
 
-      document.querySelectorAll(".dot").forEach((dot) => {
-        dot.classList.remove("active");
-      });
+      updateDots();
+    }
 
-      slides[n].style.display = "block";
-      document.querySelectorAll(".dot")[n].classList.add("active");
+    function updateDots() {
+      document.querySelectorAll(".dot").forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.add("active");
+        } else {
+          dot.classList.remove("active");
+        }
+      });
     }
 
     function goToSlide(n) {
+      slides[currentSlide].classList.remove("active");
+
+      if (n > currentSlide) {
+        slides[currentSlide].classList.add("prev");
+      } else {
+        slides.forEach((slide, idx) => {
+          if (idx !== n) {
+            slide.classList.remove("prev");
+          }
+        });
+      }
+
       currentSlide = n;
-      showSlide(currentSlide);
+      slides[currentSlide].classList.add("active");
+      slides[currentSlide].classList.remove("prev");
+
+      updateDots();
     }
 
     function nextSlide() {
-      currentSlide = (currentSlide + 1) % slides.length;
-      showSlide(currentSlide);
+      let next = (currentSlide + 1) % slides.length;
+      goToSlide(next);
     }
 
     function prevSlide() {
-      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-      showSlide(currentSlide);
+      let prev = (currentSlide - 1 + slides.length) % slides.length;
+      goToSlide(prev);
     }
 
-    // Show first slide
-    showSlide(currentSlide);
+    function resetInterval() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(nextSlide, 5000);
+    }
 
-    // Event listeners for controls
-    if (prev) prev.addEventListener("click", prevSlide);
-    if (next) next.addEventListener("click", nextSlide);
+    initSlider();
 
-    // Auto slide
-    setInterval(nextSlide, 5000);
+    if (prev)
+      prev.addEventListener("click", () => {
+        prevSlide();
+        resetInterval();
+      });
+
+    if (next)
+      next.addEventListener("click", () => {
+        nextSlide();
+        resetInterval();
+      });
+
+    slideInterval = setInterval(nextSlide, 5000);
+    slidesContainer.addEventListener("mouseenter", () => {
+      clearInterval(slideInterval);
+    });
+
+    slidesContainer.addEventListener("mouseleave", () => {
+      resetInterval();
+    });
+  }
+
+  contactButtons.forEach((button) => {
+    button.addEventListener("click", function (e) {
+      e.preventDefault();
+      contactOverlay.style.display = "flex";
+    });
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function () {
+      contactOverlay.style.display = "none";
+    });
+  }
+
+  if (contactOverlay) {
+    contactOverlay.addEventListener("click", function (e) {
+      if (e.target === contactOverlay) {
+        contactOverlay.style.display = "none";
+      }
+    });
   }
 });
