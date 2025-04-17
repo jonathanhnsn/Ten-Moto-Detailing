@@ -124,10 +124,7 @@
 }
 
 .service-card:hover {
-  /* Hapus transform: translateY(-5px); */
   box-shadow: var(--shadow);
-  /* Alternatif efek hover tanpa gerakan vertikal */
-  border-color: var(--primary-color);
 }
 
 .service-card img {
@@ -180,7 +177,6 @@
 .service-card .btn:hover,
 .btn-sm:hover {
   background-color: #0456c8;
-  /* Warna lebih gelap saat hover */
   transform: translateY(-2px);
   box-shadow: 0 5px 12px rgba(5, 109, 255, 0.4);
 }
@@ -196,14 +192,11 @@
   max-width: 800px;
 }
 
-/* --- Bagian testimonial yang diperbarui --- */
-
 .testimonials-container {
   position: relative;
   overflow: hidden;
   width: 100%;
   height: 300px;
-  /* Sesuaikan tinggi sesuai kebutuhan */
   margin-bottom: 20px;
 }
 
@@ -269,7 +262,6 @@
   font-weight: bold;
 }
 
-/* Perbaikan tombol navigasi */
 .slider-buttons {
   display: flex;
   justify-content: space-between;
