@@ -250,6 +250,10 @@ footer {
   color: #ccc;
 }
 
+.footer-contact a {
+  color: inherit;
+}
+
 .social-icons {
   display: flex;
   gap: 15px;
